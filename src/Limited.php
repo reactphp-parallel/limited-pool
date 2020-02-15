@@ -1,33 +1,34 @@
 <?php declare(strict_types=1);
 
-namespace WyriHaximus\React\Parallel;
+namespace ReactParallel\Pool\Limited;
 
 use Closure;
 use React\EventLoop\LoopInterface;
 use React\Promise\Promise;
 use React\Promise\PromiseInterface;
+use ReactParallel\Contracts\ClosedException;
+use ReactParallel\Contracts\GroupInterface;
+use ReactParallel\Contracts\LowLevelPoolInterface;
+use ReactParallel\Contracts\PoolInterface;
+use ReactParallel\Pool\Infinite\Infinite;
+use SplQueue;
 use WyriHaximus\PoolInfo\Info;
+use function count;
 use function React\Promise\reject;
 
-final class Finite implements PoolInterface
+final class Limited implements PoolInterface
 {
-    /** @var PoolInterface */
-    private $pool;
+    private PoolInterface $pool;
 
-    /** @var int */
-    private $threadCount;
+    private int $threadCount;
 
-    /** @var int */
-    private $idleRuntimes;
+    private int $idleRuntimes;
 
-    /** @var array */
-    private $queue;
+    private SplQueue $queue;
 
-    /** @var GroupInterface|null */
-    private $group;
+    private ?GroupInterface $group = null;
 
-    /** @var bool */
-    private $closed = false;
+    private bool $closed = false;
 
     public static function create(LoopInterface $loop, int $threadCount): self
     {
@@ -39,38 +40,41 @@ final class Finite implements PoolInterface
         return new self($pool, $threadCount);
     }
 
-    /**
-     * @param PoolInterface $pool
-     * @param int           $threadCount
-     */
     private function __construct(PoolInterface $pool, int $threadCount)
     {
-        $this->pool = $pool;
-        $this->threadCount = $threadCount;
+        $this->pool         = $pool;
+        $this->threadCount  = $threadCount;
         $this->idleRuntimes = $threadCount;
-        $this->queue = [];
+        $this->queue        = new SplQueue();
 
-        if ($this->pool instanceof LowLevelPoolInterface) {
-            $this->group = $this->pool->acquireGroup();
+        if (! ($this->pool instanceof LowLevelPoolInterface)) {
+            return;
         }
+
+        $this->group = $this->pool->acquireGroup();
     }
 
+    /**
+     * @param mixed[] $args
+     */
     public function run(Closure $callable, array $args = []): PromiseInterface
     {
         if ($this->closed === true) {
             return reject(ClosedException::create());
         }
 
-        return (new Promise(function ($resolve, $reject): void {
+        return (new Promise(function (callable $resolve): void {
             if ($this->idleRuntimes === 0) {
-                $this->queue[] = [$resolve, $reject];
+                $this->queue->enqueue($resolve);
 
                 return;
             }
 
             $resolve();
-        }))->then(function () use ($callable, $args) {
+        }))->then(function () use ($callable, $args): PromiseInterface {
             $this->idleRuntimes--;
+
+            /** @psalm-suppress UndefinedInterfaceMethod */
             return $this->pool->run($callable, $args)->always(function (): void {
                 $this->idleRuntimes++;
                 $this->progressQueue();
@@ -78,14 +82,11 @@ final class Finite implements PoolInterface
         });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function close(): bool
     {
         $this->closed = true;
 
-        if ($this->pool instanceof LowLevelPoolInterface) {
+        if ($this->pool instanceof LowLevelPoolInterface && $this->group instanceof GroupInterface) {
             $this->pool->releaseGroup($this->group);
         }
 
@@ -94,14 +95,11 @@ final class Finite implements PoolInterface
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function kill(): bool
     {
         $this->closed = true;
 
-        if ($this->pool instanceof LowLevelPoolInterface) {
+        if ($this->pool instanceof LowLevelPoolInterface && $this->group instanceof GroupInterface) {
             $this->pool->releaseGroup($this->group);
         }
 
@@ -110,26 +108,24 @@ final class Finite implements PoolInterface
         return true;
     }
 
+    /**
+     * @return iterable<string, int>
+     */
     public function info(): iterable
     {
         yield Info::TOTAL => $this->threadCount;
         yield Info::BUSY => $this->threadCount - $this->idleRuntimes;
-        yield Info::CALLS => \count($this->queue);
+        yield Info::CALLS => $this->queue->count();
         yield Info::IDLE  => $this->idleRuntimes;
         yield Info::SIZE  => $this->threadCount;
     }
 
     private function progressQueue(): void
     {
-        if (\count($this->queue) === 0) {
+        if (count($this->queue) === 0) {
             return;
         }
 
-        [$resolve, $reject] = \array_pop($this->queue);
-        try {
-            $resolve();
-        } catch (\Throwable $throwable) {
-            $reject($throwable);
-        }
+        ($this->queue->dequeue())();
     }
 }

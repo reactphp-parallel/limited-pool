@@ -3,6 +3,7 @@
 
 use PackageVersions\Versions;
 use React\EventLoop\Factory;
+use ReactParallel\Pool\Limited\Limited;
 use WyriHaximus\React\Parallel\Finite;
 use function WyriHaximus\iteratorOrArrayToArray;
 
@@ -10,7 +11,7 @@ require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR 
 
 $loop = Factory::create();
 
-$finite = Finite::create($loop, 2);
+$finite = Limited::create($loop, 2);
 
 $timer = $loop->addPeriodicTimer(1, function () use ($finite) {
     var_export(iteratorOrArrayToArray($finite->info()));

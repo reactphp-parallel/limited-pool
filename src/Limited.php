@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace ReactParallel\Pool\Limited;
 
@@ -10,9 +12,11 @@ use ReactParallel\Contracts\ClosedException;
 use ReactParallel\Contracts\GroupInterface;
 use ReactParallel\Contracts\LowLevelPoolInterface;
 use ReactParallel\Contracts\PoolInterface;
+use ReactParallel\EventLoop\EventLoopBridge;
 use ReactParallel\Pool\Infinite\Infinite;
 use SplQueue;
 use WyriHaximus\PoolInfo\Info;
+
 use function count;
 use function React\Promise\reject;
 
@@ -24,15 +28,16 @@ final class Limited implements PoolInterface
 
     private int $idleRuntimes;
 
+    /** @var SplQueue<callable> */
     private SplQueue $queue;
 
     private ?GroupInterface $group = null;
 
     private bool $closed = false;
 
-    public static function create(LoopInterface $loop, int $threadCount): self
+    public static function create(LoopInterface $loop, EventLoopBridge $eventLoopBridge, int $threadCount): self
     {
-        return new self(new Infinite($loop, 1), $threadCount);
+        return new self(new Infinite($loop, $eventLoopBridge, 1), $threadCount);
     }
 
     public static function createWithPool(PoolInterface $pool, int $threadCount): self

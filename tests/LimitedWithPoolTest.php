@@ -5,6 +5,7 @@ namespace ReactParallel\Tests\Pool\Limited;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 use ReactParallel\Contracts\PoolInterface;
+use ReactParallel\EventLoop\EventLoopBridge;
 use ReactParallel\Pool\Infinite\Infinite;
 use ReactParallel\Pool\Limited\Limited;
 use ReactParallel\Tests\AbstractPoolTest;
@@ -20,11 +21,12 @@ final class LimitedWithPoolTest extends AbstractPoolTest
 
     private function poolFactory(): PoolInfoInterface
     {
-        return Limited::createWithPool(new Infinite(Factory::create(), 0.2), 5);
+        $loop = Factory::create();
+        return Limited::createWithPool(new Infinite($loop, new EventLoopBridge($loop), 0.2), 5);
     }
 
     protected function createPool(LoopInterface $loop): PoolInterface
     {
-        return Limited::createWithPool(new Infinite($loop, 0.2), 5);
+        return Limited::createWithPool(new Infinite($loop, new EventLoopBridge($loop), 0.2), 5);
     }
 }

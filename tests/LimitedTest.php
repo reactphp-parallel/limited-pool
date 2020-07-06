@@ -5,6 +5,7 @@ namespace ReactParallel\Tests\Pool\Limited;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 use ReactParallel\Contracts\PoolInterface;
+use ReactParallel\EventLoop\EventLoopBridge;
 use ReactParallel\Pool\Limited\Limited;
 use ReactParallel\Tests\AbstractPoolTest;
 use WyriHaximus\PoolInfo\PoolInfoInterface;
@@ -19,11 +20,12 @@ final class LimitedTest extends AbstractPoolTest
 
     private function poolFactory(): PoolInfoInterface
     {
-        return Limited::create(Factory::create(), 5);
+        $loop = Factory::create();
+        return Limited::create($loop, new EventLoopBridge($loop), 5);
     }
 
     protected function createPool(LoopInterface $loop): PoolInterface
     {
-        return Limited::create($loop, 5);
+        return Limited::create($loop, new EventLoopBridge($loop), 5);
     }
 }

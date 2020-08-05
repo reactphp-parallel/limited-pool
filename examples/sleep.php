@@ -3,6 +3,7 @@
 
 use React\EventLoop\Factory;
 use ReactParallel\EventLoop\EventLoopBridge;
+use ReactParallel\Pool\Infinite\Infinite;
 use ReactParallel\Pool\Limited\Limited;
 use WyriHaximus\React\Parallel\Finite;
 use function React\Promise\all;
@@ -12,7 +13,7 @@ require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR 
 
 $loop = Factory::create();
 
-$finite = Limited::create($loop, new EventLoopBridge($loop), 100);
+$finite = new Limited(new Infinite($loop, new EventLoopBridge($loop), 1), 100);
 
 $timer = $loop->addPeriodicTimer(1, function () use ($finite) {
     var_export(iteratorOrArrayToArray($finite->info()));

@@ -22,11 +22,11 @@ final class LimitedWithPoolTest extends AbstractPoolTest
     private function poolFactory(): PoolInfoInterface
     {
         $loop = Factory::create();
-        return Limited::createWithPool(new Infinite($loop, new EventLoopBridge($loop), 0.2), 5);
+        return new Limited(new Infinite($loop, new EventLoopBridge($loop), 1), 5);
     }
 
     protected function createPool(LoopInterface $loop): PoolInterface
     {
-        return Limited::createWithPool(new Infinite($loop, new EventLoopBridge($loop), 0.2), 5);
+        return new Limited(new Infinite($loop, new EventLoopBridge($loop), 1), 5);
     }
 }

@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace ReactParallel\Pool\Limited;
 
 use Closure;
-use React\EventLoop\LoopInterface;
 use React\Promise\Promise;
 use React\Promise\PromiseInterface;
 use ReactParallel\Contracts\ClosedException;
 use ReactParallel\Contracts\GroupInterface;
 use ReactParallel\Contracts\LowLevelPoolInterface;
 use ReactParallel\Contracts\PoolInterface;
-use ReactParallel\EventLoop\EventLoopBridge;
-use ReactParallel\Pool\Infinite\Infinite;
 use SplQueue;
 use WyriHaximus\PoolInfo\Info;
 
@@ -35,17 +32,7 @@ final class Limited implements PoolInterface
 
     private bool $closed = false;
 
-    public static function create(LoopInterface $loop, EventLoopBridge $eventLoopBridge, int $threadCount): self
-    {
-        return new self(new Infinite($loop, $eventLoopBridge, 1), $threadCount);
-    }
-
-    public static function createWithPool(PoolInterface $pool, int $threadCount): self
-    {
-        return new self($pool, $threadCount);
-    }
-
-    private function __construct(PoolInterface $pool, int $threadCount)
+    public function __construct(PoolInterface $pool, int $threadCount)
     {
         $this->pool         = $pool;
         $this->threadCount  = $threadCount;

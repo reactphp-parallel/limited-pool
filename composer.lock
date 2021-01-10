@@ -173,16 +173,16 @@
         },
         {
             "name": "react-parallel/infinite-pool",
-            "version": "2.0.0",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp-parallel/infinite-pool.git",
-                "reference": "a7efc85bafb88977eea4f316c4cbc5c6ef612ae7"
+                "reference": "fb2b923793527f76a77915476b58186ec1d21109"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp-parallel/infinite-pool/zipball/a7efc85bafb88977eea4f316c4cbc5c6ef612ae7",
-                "reference": "a7efc85bafb88977eea4f316c4cbc5c6ef612ae7",
+                "url": "https://api.github.com/repos/reactphp-parallel/infinite-pool/zipball/fb2b923793527f76a77915476b58186ec1d21109",
+                "reference": "fb2b923793527f76a77915476b58186ec1d21109",
                 "shasum": ""
             },
             "require": {
@@ -193,16 +193,15 @@
                 "react-parallel/runtime": "^2.0",
                 "react/event-loop": "^1.1",
                 "react/promise": "^2.7",
-                "wyrihaximus/constants": "^1.4",
-                "wyrihaximus/pool-info": "^1.0",
-                "wyrihaximus/ticking-promise": "^1.6"
+                "wyrihaximus/constants": "^1.5",
+                "wyrihaximus/metrics": "^1.0",
+                "wyrihaximus/pool-info": "^1.0"
             },
             "require-dev": {
                 "bruli/php-value-objects": "^2.0",
                 "moneyphp/money": "^3.2 || ^3.2.1",
-                "ocramius/package-versions": "^1.4",
-                "react-parallel/pool-tests": "^2.0",
-                "wyrihaximus/async-test-utilities": "^2.2",
+                "react-parallel/pool-tests": "^3.0",
+                "wyrihaximus/async-test-utilities": "^3.2",
                 "wyrihaximus/iterator-or-array-to-array": "^1.1"
             },
             "type": "library",
@@ -223,13 +222,17 @@
                 }
             ],
             "description": "♾️ Infinite pool for bridging ext-parallel and ReactPHP",
+            "support": {
+                "issues": "https://github.com/reactphp-parallel/infinite-pool/issues",
+                "source": "https://github.com/reactphp-parallel/infinite-pool/tree/2.1.2"
+            },
             "funding": [
                 {
                     "url": "https://github.com/WyriHaximus",
                     "type": "github"
                 }
             ],
-            "time": "2020-07-06T19:18:05+00:00"
+            "time": "2020-11-21T12:37:59+00:00"
         },
         {
             "name": "react-parallel/object-proxy-attributes",
@@ -331,6 +334,10 @@
                 }
             ],
             "description": "💨 Convinence wrapper around ext-parallel Runtime for and ReactPHP",
+            "support": {
+                "issues": "https://github.com/reactphp-parallel/runtime/issues",
+                "source": "https://github.com/reactphp-parallel/runtime/tree/2.0.0"
+            },
             "funding": [
                 {
                     "url": "https://github.com/WyriHaximus",

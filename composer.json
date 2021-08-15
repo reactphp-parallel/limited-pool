@@ -18,8 +18,7 @@
         "react-parallel/runtime": "^2.0",
         "react/event-loop": "^1.1",
         "react/promise": "^2.7",
-        "wyrihaximus/pool-info": "^1.0",
-        "wyrihaximus/ticking-promise": "^1.6 || ^2.0"
+        "wyrihaximus/pool-info": "^1.0"
     },
     "require-dev": {
         "moneyphp/money": "^3.2 || ^3.2.1",

@@ -9,6 +9,16 @@
         "text": "infection.log"
     },
     "mutators": {
-        "@default": true
+        "@default": true,
+        "InstanceOf_": false,
+        "LogicalNot": false,
+        "DecrementInteger": false,
+        "OneZeroInteger": false,
+        "Decrement": false,
+        "Increment": false,
+        "TrueValue": false,
+        "LogicalAnd": false,
+        "MethodCallRemoval": false,
+        "Minus": false
     }
 }

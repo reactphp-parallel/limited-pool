@@ -6,19 +6,15 @@
         ]
     },
     "logs": {
-        "text": "infection.log"
+        "text": "./var/infection.log",
+        "summary": "./var/infection-summary.log",
+        "json": "./var/infection.json",
+        "perMutator": "./var/infection-per-mutator.md"
     },
     "mutators": {
-        "@default": true,
-        "InstanceOf_": false,
-        "LogicalNot": false,
-        "DecrementInteger": false,
-        "OneZeroInteger": false,
-        "Decrement": false,
-        "Increment": false,
-        "TrueValue": false,
-        "LogicalAnd": false,
-        "MethodCallRemoval": false,
-        "Minus": false
+        "@default": true
+    },
+    "phpUnit": {
+        "configDir": "./etc/qa/"
     }
 }

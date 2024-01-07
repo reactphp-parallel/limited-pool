@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace ReactParallel\Pool\Limited;
 
 use Closure;
-use React\Promise\Promise;
-use React\Promise\PromiseInterface;
+use React\Promise\Deferred;
 use ReactParallel\Contracts\ClosedException;
 use ReactParallel\Contracts\GroupInterface;
 use ReactParallel\Contracts\LowLevelPoolInterface;
@@ -15,27 +14,21 @@ use SplQueue;
 use WyriHaximus\PoolInfo\Info;
 
 use function count;
-use function React\Promise\reject;
+use function React\Async\await;
 
 final class Limited implements PoolInterface
 {
-    private PoolInterface $pool;
-
-    private int $threadCount;
-
     private int $idleRuntimes;
 
     /** @var SplQueue<callable> */
     private SplQueue $queue;
 
-    private ?GroupInterface $group = null;
+    private GroupInterface|null $group = null;
 
     private bool $closed = false;
 
-    public function __construct(PoolInterface $pool, int $threadCount)
+    public function __construct(private PoolInterface $pool, private int $threadCount)
     {
-        $this->pool         = $pool;
-        $this->threadCount  = $threadCount;
         $this->idleRuntimes = $threadCount;
         $this->queue        = new SplQueue();
 
@@ -47,31 +40,34 @@ final class Limited implements PoolInterface
     }
 
     /**
-     * @param mixed[] $args
+     * @param (Closure():T) $callable
+     * @param array<mixed>  $args
+     *
+     * @return T
+     *
+     * @template T
      */
-    public function run(Closure $callable, array $args = []): PromiseInterface
+    public function run(Closure $callable, array $args = []): mixed
     {
         if ($this->closed === true) {
-            return reject(ClosedException::create());
+            throw ClosedException::create();
         }
 
-        return (new Promise(function (callable $resolve): void {
-            if ($this->idleRuntimes === 0) {
-                $this->queue->enqueue($resolve);
+        if ($this->idleRuntimes === 0) {
+            $deferred = new Deferred();
+            $this->queue->enqueue([$deferred, 'resolve']);
 
-                return;
-            }
+            await($deferred->promise());
+        }
 
-            $resolve();
-        }))->then(function () use ($callable, $args): PromiseInterface {
+        try {
             $this->idleRuntimes--;
 
-            /** @psalm-suppress UndefinedInterfaceMethod */
-            return $this->pool->run($callable, $args)->always(function (): void {
-                $this->idleRuntimes++;
-                $this->progressQueue();
-            });
-        });
+            return $this->pool->run($callable, $args);
+        } finally {
+            $this->idleRuntimes++;
+            $this->progressQueue();
+        }
     }
 
     public function close(): bool
@@ -100,9 +96,7 @@ final class Limited implements PoolInterface
         return true;
     }
 
-    /**
-     * @return iterable<string, int>
-     */
+    /** @return iterable<string, int> */
     public function info(): iterable
     {
         yield Info::TOTAL => $this->threadCount;

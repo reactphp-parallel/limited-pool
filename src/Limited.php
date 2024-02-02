@@ -55,7 +55,7 @@ final class Limited implements PoolInterface
 
         if ($this->idleRuntimes === 0) {
             $deferred = new Deferred();
-            $this->queue->enqueue([$deferred, 'resolve']);
+            $this->queue->enqueue(static fn () => $deferred->resolve(null));
 
             await($deferred->promise());
         }

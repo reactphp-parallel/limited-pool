@@ -19,7 +19,7 @@
     },
     "require-dev": {
         "ext-parallel": "*",
-        "moneyphp/money": "^3.2",
+        "moneyphp/money": "^3.2 || ^4.0",
         "react-parallel/event-loop": "^2@dev",
         "react-parallel/infinite-pool": "^3@dev",
         "react-parallel/pool-tests": "^4@dev",

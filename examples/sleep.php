@@ -1,49 +1,49 @@
 <?php
 
+declare(strict_types=1);
 
-use React\EventLoop\Factory;
+use React\EventLoop\Loop;
 use ReactParallel\EventLoop\EventLoopBridge;
 use ReactParallel\Pool\Infinite\Infinite;
 use ReactParallel\Pool\Limited\Limited;
-use WyriHaximus\React\Parallel\Finite;
+
+use function React\Async\async;
+use function React\Async\await;
 use function React\Promise\all;
 use function WyriHaximus\iteratorOrArrayToArray;
 
 require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-$loop = Factory::create();
+$finite = new Limited(new Infinite(new EventLoopBridge(), 1), 100);
 
-$finite = new Limited(new Infinite($loop, new EventLoopBridge($loop), 1), 100);
-
-$timer = $loop->addPeriodicTimer(1, function () use ($finite) {
+$timer = Loop::addPeriodicTimer(1, function () use ($finite) {
     var_export(iteratorOrArrayToArray($finite->info()));
 });
 
 $promises = [];
 foreach (range(0, 250) as $i) {
-    $promises[] = $finite->run(function($sleep) {
-        sleep($sleep);
-        return $sleep;
-    }, [random_int(1, 13)])->then(function (int $sleep) use ($i) {
+    $promises[] = async(static function (Limited $finite, int $i): int {
+        $sleep = $finite->run(static function (int $sleep): int {
+            sleep($sleep);
+
+            return $sleep;
+        }, [random_int(1, 13)]);
+
         echo $i, '; ', $sleep, PHP_EOL;
 
         return $sleep;
-    });
+    })($finite, $i);
 }
 
-$signalHandler = function () use ($finite, $loop) {
-    $loop->stop();
+$signalHandler = static function () use ($finite): void {
     $finite->close();
+    Loop::stop();
 };
-all($promises)->then(function ($v) use ($finite, $loop, &$signalHandler, $timer) {
-    $finite->close();
-    $loop->removeSignal(SIGINT, $signalHandler);
-    $loop->cancelTimer($timer);
-    $loop->stop();
-})->done();
 
-$loop->addSignal(SIGINT, $signalHandler);
+Loop::addSignal(SIGINT, $signalHandler);
 
-echo 'Loop::run()', PHP_EOL;
-$loop->run();
-echo 'Loop::done()', PHP_EOL;
+await(all($promises));
+
+$finite->close();
+Loop::removeSignal(SIGINT, $signalHandler);
+Loop::cancelTimer($timer);

@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": "^8.1",
-        "react-parallel/contracts": "^2@dev",
+        "react-parallel/contracts": "^2.0.0",
         "react/async": "^4.2",
         "react/event-loop": "^1.5",
         "react/promise": "^2 || ^3.1",
@@ -20,10 +20,11 @@
     "require-dev": {
         "ext-parallel": "*",
         "moneyphp/money": "^3.2",
-        "react-parallel/event-loop": "^2@dev",
-        "react-parallel/infinite-pool": "^3@dev",
-        "react-parallel/pool-tests": "^4@dev",
-        "react-parallel/runtime": "^3@dev",
+        "react-parallel/event-loop": "^2.0.0",
+        "react-parallel/infinite-pool": "^3.0.0",
+        "react-parallel/pool-tests": "^4.0.0",
+        "react-parallel/runtime": "^3.0.0",
+        "react-parallel/stubs": "^1.2",
         "wyrihaximus/async-test-utilities": "^5 || ^7.2"
     },
     "minimum-stability": "dev",

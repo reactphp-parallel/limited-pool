@@ -14,32 +14,28 @@ ReactPHP bindings around ext-parallel
 To install via [Composer](http://getcomposer.org/), use the command below, it will automatically detect the latest version and bind it with `~`.
 
 ```
-composer require react-parallel/limited-pool 
+composer require react-parallel/limited-pool
 ```
 
 ## Usage
 
-Just like any other `react-parallel` the limited pool will run any closure you send to it. With the exception that this 
+Just like any other `react-parallel` the limited pool will run any closure you send to it. With the exception that this
 pool have a fixed number of threads running.
 
 ```php
-$loop = Factory::create();
-
 $finite = new Limited(
-    new Infinite($loop, new EventLoopBridge($loop), 1), // Another pool, preferably an inifinite pool
+    new Infinite(new EventLoopBridge(), 1), // Another pool, preferably an inifinite pool
     100 // The amount of threads to start and keep running
 );
 $time = time();
-$finite->run(function (int $time): int {
+echo 'Unix timestamp: ', $finite->run(function (int $time): int {
     return $time;
-}, [$time])->then(function (int $time): void {
-    echo 'Unix timestamp: ', $time, PHP_EOL;
-})->done();
+}, [$time]), $time, PHP_EOL;
 ```
 
 ## License ##
 
-Copyright 2020 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
+Copyright 2025 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

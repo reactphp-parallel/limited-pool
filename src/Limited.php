@@ -40,12 +40,29 @@ final class Limited implements PoolInterface
     }
 
     /**
-     * @param (Closure():T) $callable
-     * @param array<mixed>  $args
+     * @param (Closure():T)|(Closure(A0):T)|(Closure(A0,A1):T)|(Closure(A0,A1,A2):T)|(Closure(A0,A1,A2,A3):T)|(Closure(A0,A1,A2,A3,A4):T)|(Closure():void)|(Closure(A0):void)|(Closure(A0,A1):void)|(Closure(A0,A1,A2):void)|(Closure(A0,A1,A2,A3):void)|(Closure(A0,A1,A2,A3,A4):void) $callable
+     * @param array{}|array{A0}|array{A0,A1}|array{A0,A1,A2}|array{A0,A1,A2,A3}|array{A0,A1,A2,A3,A4}                                                                                                                                                                                   $args
      *
-     * @return T
+     * @return (
+     *      $callable is (Closure():T) ? T : (
+     *          $callable is (Closure(A0):T) ? T : (
+     *              $callable is (Closure(A0,A1):T) ? T : (
+     *                  $callable is (Closure(A0,A1,A2):T) ? T : (
+     *                      $callable is (Closure(A0,A1,A2,A3):T) ? T : (
+     *                          $callable is (Closure(A0,A1,A2,A3,A4):T) ? T : null
+     *                      )
+     *                  )
+     *              )
+     *          )
+     *      )
+     * )
      *
      * @template T
+     * @template A0 (any number of function arguments, see https://github.com/phpstan/phpstan/issues/8214)
+     * @template A1
+     * @template A2
+     * @template A3
+     * @template A4
      */
     public function run(Closure $callable, array $args = []): mixed
     {

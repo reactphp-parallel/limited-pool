@@ -23,14 +23,23 @@ Just like any other `react-parallel` the limited pool will run any closure you s
 pool have a fixed number of threads running.
 
 ```php
-$finite = new Limited(
+use React\EventLoop\Loop;
+use ReactParallel\EventLoop\EventLoopBridge;
+use ReactParallel\Pool\Infinite\Infinite;
+use ReactParallel\Pool\Limited\Limited;
+use function React\Async\async;
+
+$limited = new Limited(
     new Infinite(new EventLoopBridge(), 1), // Another pool, preferably an inifinite pool
     100 // The amount of threads to start and keep running
 );
 $time = time();
-echo 'Unix timestamp: ', $finite->run(function (int $time): int {
-    return $time;
-}, [$time]), $time, PHP_EOL;
+
+Loop::futureTick(async(static function () use ($limited, $time) {
+    echo 'Unix timestamp: ', $limited->run(function (int $time): int {
+        return $time;
+    }, [$time]), $time, PHP_EOL;
+}));
 ```
 
 ## License ##

@@ -25,7 +25,7 @@
         "react-parallel/pool-tests": "^4.0.0",
         "react-parallel/runtime": "^3.0.0",
         "react-parallel/stubs": "^1.2",
-        "wyrihaximus/async-test-utilities": "^5 || ^7.2"
+        "wyrihaximus/async-test-utilities": "^5 || ^7.2 || ^9.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

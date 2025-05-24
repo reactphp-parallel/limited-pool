@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ReactParallel\Tests\Pool\Limited;
 
+use PHPUnit\Framework\Attributes\Test;
 use React\EventLoop\Loop;
 use React\Promise\Deferred;
 use ReactParallel\EventLoop\EventLoopBridge;
@@ -18,7 +19,7 @@ use function React\Promise\all;
 
 trait LimitedTestTrait
 {
-    /** @test */
+    #[Test]
     public function assertWeCanRunMoreThanThePoolLimit(): void
     {
         $pool = new Limited(new Infinite(new EventLoopBridge(), 1), 5);
@@ -28,9 +29,7 @@ trait LimitedTestTrait
             $deferred = new Deferred();
             Loop::futureTick(async(static function () use ($pool, $deferred, $i): void {
                 try {
-                    $deferred->resolve($pool->run(static function () use ($i): int {
-                        return $i;
-                    }));
+                    $deferred->resolve($pool->run(static fn (): int => $i));
                 } catch (Throwable $exception) {
                     $deferred->reject($exception);
                 }

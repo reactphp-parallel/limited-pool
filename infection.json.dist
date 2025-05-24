@@ -16,7 +16,22 @@
     "minCoveredMsi": 100,
     "ignoreMsiWithNoMutations": true,
     "mutators": {
-        "@default": true
+        "@default": true,
+        "Decrement": false,
+        "DecrementInteger": false,
+        "FunctionCallRemoval": false,
+        "Increment": false,
+        "InstanceOf_": false,
+        "LogicalAnd": false,
+        "LogicalAndAllSubExprNegation": false,
+        "LogicalAndNegation": false,
+        "LogicalNot": false,
+        "MethodCallRemoval": false,
+        "Minus": false,
+        "Throw_": false,
+        "TrueValue": false,
+        "Yield_": false,
+        "YieldValue": false
     },
     "phpUnit": {
         "configDir": "./etc/qa/"

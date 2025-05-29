@@ -10,22 +10,22 @@
         }
     ],
     "require": {
-        "php": "^8.1",
-        "react-parallel/contracts": "^2.0.0",
-        "react/async": "^4.2",
-        "react/event-loop": "^1.5",
-        "react/promise": "^2 || ^3.1",
-        "wyrihaximus/pool-info": "^1.1 || ^2"
+        "php": "^8.3",
+        "react-parallel/contracts": "^2.1.0",
+        "react/async": "^4.3.0",
+        "react/event-loop": "^1.5.0",
+        "react/promise": "^3.2.0",
+        "wyrihaximus/pool-info": "^2.0.0"
     },
     "require-dev": {
         "ext-parallel": "*",
-        "moneyphp/money": "^3.2",
-        "react-parallel/event-loop": "^2.0.0",
-        "react-parallel/infinite-pool": "^3.0.0",
-        "react-parallel/pool-tests": "^4.0.0",
-        "react-parallel/runtime": "^3.0.0",
-        "react-parallel/stubs": "^1.2",
-        "wyrihaximus/async-test-utilities": "^5 || ^7.2"
+        "moneyphp/money": "^4.7.0",
+        "react-parallel/event-loop": "^2.1.0",
+        "react-parallel/infinite-pool": "^3.1.0",
+        "react-parallel/pool-tests": "^5.0.0",
+        "react-parallel/stubs": "^1.2.0",
+        "wyrihaximus/async-test-utilities": "^9.3.0",
+        "wyrihaximus/makefiles": "^0.4.2"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -45,10 +45,12 @@
             "ergebnis/composer-normalize": true,
             "icanhazstring/composer-unused": true,
             "infection/extension-installer": true,
-            "ocramius/package-versions": true
+            "ocramius/package-versions": true,
+            "phpstan/extension-installer": true,
+            "wyrihaximus/makefiles": true
         },
         "platform": {
-            "php": "8.1.13"
+            "php": "8.3.13"
         },
         "sort-packages": true
     },

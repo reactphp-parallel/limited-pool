@@ -21,18 +21,20 @@ final class Limited implements PoolInterface
     private int $idleRuntimes;
 
     /** @var SplQueue<callable> */
-    private SplQueue $queue;
+    private readonly SplQueue $queue;
 
+    /** @phpstan-ignore shipmonk.uselessPrivatePropertyDefaultValue */
     private GroupInterface|null $group = null;
 
     private bool $closed = false;
 
-    public function __construct(private PoolInterface $pool, private int $threadCount)
+    public function __construct(private readonly PoolInterface $pool, private readonly int $threadCount)
     {
         $this->idleRuntimes = $threadCount;
         $this->queue        = new SplQueue();
 
         if (! ($this->pool instanceof LowLevelPoolInterface)) {
+            /** @phpstan-ignore shipmonk.returnInConstructor */
             return;
         }
 
@@ -66,7 +68,7 @@ final class Limited implements PoolInterface
      */
     public function run(Closure $callable, array $args = []): mixed
     {
-        if ($this->closed === true) {
+        if ($this->closed) {
             throw ClosedException::create();
         }
 

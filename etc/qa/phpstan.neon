@@ -5,11 +5,12 @@ parameters:
 			message: '#Method ReactParallel\\Pool\\Limited\\Limited::run\(\) should return T\|null but returns T\|void\|null.#'
 			path: ../../src/Limited.php
 		-
+			identifier: shipmonk.nonNormalizedType
+			path: ../../src/Limited.php
+			count: 10
+		-
 			message: '#sleep blocks the event loop#'
 			path: ../../tests/Types.php
-		-
-			message: '#caught \"Throwable\" must be rethrown#'
-			path: ../../tests/LimitedTestTrait.php
 	ergebnis:
 		noExtends:
 			classesAllowedToBeExtended:
@@ -17,8 +18,3 @@ parameters:
 				- ReactParallel\EventLoop\CanceledFuture
 				- ReactParallel\EventLoop\KilledRuntime
 				- ReactParallel\Tests\AbstractPoolTest
-
-includes:
-	- ../../vendor/wyrihaximus/async-test-utilities/rules.neon
-	- ../../vendor/react-parallel/stubs/extension.neon
-

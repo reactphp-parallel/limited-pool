@@ -24,7 +24,7 @@
         "react-parallel/infinite-pool": "^3.1.0",
         "react-parallel/pool-tests": "^5.0.0",
         "react-parallel/stubs": "^1.2.0",
-        "wyrihaximus/async-test-utilities": "^9.3.0",
+        "wyrihaximus/async-test-utilities": "^9.4.2",
         "wyrihaximus/makefiles": "^0.5.0"
     },
     "minimum-stability": "dev",

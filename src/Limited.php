@@ -16,6 +16,7 @@ use WyriHaximus\PoolInfo\Info;
 use function count;
 use function React\Async\await;
 
+/** @api */
 final class Limited implements PoolInterface
 {
     private int $idleRuntimes;

@@ -32,5 +32,6 @@
         "TrueValue": false,
         "Yield_": false,
         "YieldValue": false
-    }
+    },
+    "threads": 64
 }

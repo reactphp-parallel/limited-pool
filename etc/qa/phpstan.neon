@@ -6,9 +6,6 @@ parameters:
 	level: max
 	ignoreErrors:
 		-
-			message: '#Method ReactParallel\\Pool\\Limited\\Limited::run\(\) should return T\|null but returns T\|void\|null.#'
-			path: ../../src/Limited.php
-		-
 			message: '#sleep blocks the event loop#'
 			path: ../../tests/Types.php
 	ergebnis:

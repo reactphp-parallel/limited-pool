@@ -9,7 +9,7 @@
 
 ReactPHP bindings around ext-parallel
 
-## Install ##
+## Install
 
 To install via [Composer](http://getcomposer.org/), use the command below, it will automatically detect the latest version and bind it with `~`.
 
@@ -17,7 +17,7 @@ To install via [Composer](http://getcomposer.org/), use the command below, it wi
 composer require react-parallel/limited-pool
 ```
 
-## Usage
+# Usage
 
 Just like any other `react-parallel` the limited pool will run any closure you send to it. With the exception that this
 pool have a fixed number of threads running.
@@ -30,8 +30,8 @@ use ReactParallel\Pool\Limited\Limited;
 use function React\Async\async;
 
 $limited = new Limited(
-    new Infinite(new EventLoopBridge(), 1), // Another pool, preferably an inifinite pool
-    100 // The amount of threads to start and keep running
+    new Infinite(new EventLoopBridge(), 1), // Another pool, preferably an infinite pool
+    100, // The amount of threads to start and keep running
 );
 $time = time();
 
@@ -42,7 +42,7 @@ Loop::futureTick(async(static function () use ($limited, $time) {
 }));
 ```
 
-## License ##
+## License
 
 Copyright 2026 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
 
